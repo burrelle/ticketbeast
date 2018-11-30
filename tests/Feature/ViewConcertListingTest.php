@@ -14,8 +14,6 @@ class ViewConcertListingTest extends TestCase
 
     public function testUserCanViewAConcertListing()
     {
-        // Arrange
-        // Create a concert
         $concert = Concert::create([
             'title' => 'The Red Chord',
             'subtitle' => 'with Animosity and Lethargy',
@@ -29,12 +27,8 @@ class ViewConcertListingTest extends TestCase
             'additional_information' => 'For tickets, call (555) 555-5555'
         ]);
 
-        // Act
-        // View the conecert listing
         $response = $this->get('/concerts/' . $concert->id);
 
-        // Assert
-        // See the concert details
         $response->assertSee('The Red Chord');
         $response->assertSee('with Animosity and Lethargy');
         $response->assertSee('December 13, 2016');
@@ -43,5 +37,15 @@ class ViewConcertListingTest extends TestCase
         $response->assertSee('The Mosh Pit');
         $response->assertSee('Laraville, ON 17916');
         $response->assertSee('For tickets, call (555) 555-5555');
+    }
+
+    public function testUserCannotViewUnpublishedConcertListing()
+    {
+        $concert = factory(Concert::class)->create([
+            'published_at' => null
+        ]);
+
+        $response = $this->get('/concerts/' . $concert->id);
+        $response->assertStatus(404);
     }
 }
