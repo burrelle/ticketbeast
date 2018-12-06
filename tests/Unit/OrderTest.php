@@ -9,10 +9,10 @@ class OrderTest extends TestCase
 {
     use DatabaseMigrations;
 
-    public function testCreatingAnOrderFromEmailAndTickets()
+    public function testCreatingAnOrderFromEmailAndTicketsAndAmount()
     {
-        $concert = factory(Concert::class)->create(['ticket_price' => 1200])->addTickets(5);
-        $order = Order::forTickets($concert->findTickets(3), 'john@example.com');
+        $concert = factory(Concert::class)->create()->addTickets(5);
+        $order = Order::forTickets($concert->findTickets(3), 'john@example.com', 3600);
         $this->assertEquals('john@example.com', $order->email);
         $this->assertEquals(3, $order->ticketQuantity());
         $this->assertEquals(3600, $order->amount);
