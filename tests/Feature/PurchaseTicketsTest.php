@@ -139,7 +139,7 @@ class PurchaseTicketsTest extends TestCase
             'payment_token' => 'invalid-payment-token',
         ]);
 
-        $response->assertResponseStatus(422);
+        $response->assertStatus(422);
         $order = $concert->orders()->where('email', 'john@example.com')->first();
         $this->assertNull($order);
         $this->assertEquals(0, $this->paymentGateway->totalCharges());
