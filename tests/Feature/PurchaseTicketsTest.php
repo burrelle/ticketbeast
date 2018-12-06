@@ -1,10 +1,10 @@
 <?php
 
-use Tests\TestCase;
 use App\Concert;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
-use App\Billing\FakePaymentGateway;
+use Tests\TestCase;
 use App\Billing\PaymentGateway;
+use App\Billing\FakePaymentGateway;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 class PurchaseTicketsTest extends TestCase
 {
@@ -127,5 +127,22 @@ class PurchaseTicketsTest extends TestCase
         ]);
 
         $this->assertValidationError($response, 'errors');
+    }
+
+    public function testCannotPurchaseMoreTicketsThanRemain()
+    {
+        $concert = factory(Concert::class)->states('published')->create();
+        $concert->addTickets(50);
+        $response = $this->orderTickets($concert, [
+            'email' => 'john@example.com',
+            'ticket_quantity' => 51,
+            'payment_token' => 'invalid-payment-token',
+        ]);
+
+        $response->assertResponseStatus(422);
+        $order = $concert->orders()->where('email', 'john@example.com')->first();
+        $this->assertNull($order);
+        $this->assertEquals(0, $this->paymentGateway->totalCharges());
+        $this->assertEquals(50, $concert->ticketsRemaining());
     }
 }
