@@ -28,7 +28,7 @@ class PurchaseTicketsTest extends TestCase
         $this->assertArrayHasKey($field, $response->decodeResponseJson());
     }
 
-    public function testCustomerCanPurchaseConcertTicketsToPublushedConcert()
+    public function testCustomerCanPurchaseConcertTicketsToPublishedConcert()
     {
         $concert = factory(Concert::class)->states('published')->create(['ticket_price' => '3250'])->addTickets(3);
         $response = $this->orderTickets($concert, [
