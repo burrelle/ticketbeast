@@ -31,6 +31,7 @@ class PurchaseTicketsTest extends TestCase
     public function testCustomerCanPurchaseConcertTicketsToPublushedConcert()
     {
         $concert = factory(Concert::class)->states('published')->create(['ticket_price' => '3250']);
+        $concert->addTickets(3);
         $response = $this->orderTickets($concert, [
             'email' => 'john@example.com',
             'ticket_quantity' => 3,
@@ -48,6 +49,7 @@ class PurchaseTicketsTest extends TestCase
     public function testCannontPurchaseTicketsToUnpublishedConcert()
     {
         $concert = factory(Concert::class)->states('unpublished')->create();
+        $concert->addTickets(3);
         $response = $this->orderTickets($concert, [
             'email' => 'john@example.com',
             'ticket_quantity' => 3,
@@ -62,6 +64,7 @@ class PurchaseTicketsTest extends TestCase
     public function testAnOrderIsNotCreatedIfPaymentFails()
     {
         $concert = factory(Concert::class)->states('published')->create(['ticket_price' => 3250]);
+        $concert->addTickets(3);
         $response = $this->orderTickets($concert, [
             'email' => 'john@example.com',
             'ticket_quantity' => 3,
