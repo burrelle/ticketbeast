@@ -15,4 +15,20 @@ class ReservationTest extends TestCase
         $reservation = new Reservation($tickets);
         $this->assertEquals(3600, $reservation->totalCost());
     }
+
+    public function testReservedTicketsAreReleasedIsCancelled()
+    {
+        $tickets = collect([
+            Mockery::spy(Ticket::class),
+            Mockery::spy(Ticket::class),
+            Mockery::spy(Ticket::class)
+        ]);
+
+        $reservation = new Reservation($tickets);
+        $reservation->cancel();
+
+        foreach ($tickets as $ticket) {
+            $ticket->shouldHaveReceived('release');
+        }
+    }
 }

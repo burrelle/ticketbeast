@@ -75,6 +75,7 @@ class PurchaseTicketsTest extends TestCase
         ]);
         $response->assertStatus(422);
         $this->assertFalse($concert->hasOrderFor('john@example.com'));
+        $this->assertEquals(3, $concert->ticketsRemaining());
     }
 
     public function testEmailIsRequiredToPurchaseTickets()

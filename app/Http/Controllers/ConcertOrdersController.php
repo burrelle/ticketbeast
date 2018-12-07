@@ -4,11 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Order;
 use App\Concert;
+use App\Reservation;
 use Illuminate\Http\Request;
 use App\Billing\PaymentGateway;
 use App\Billing\PaymentFailedException;
 use App\Exceptions\NotEnoughTicketsException;
-use App\Reservation;
 
 class ConcertOrdersController extends Controller
 {
@@ -34,6 +34,7 @@ class ConcertOrdersController extends Controller
             $order = Order::forTickets($tickets, request('email'), $reservation->totalCost());
             return response()->json($order, 201);
         } catch (PaymentFailedException $e) {
+            $reservation->cancel();
             return response()->json([], 422);
         } catch (NotEnoughTicketsException $e) {
             return response()->json([], 422);
