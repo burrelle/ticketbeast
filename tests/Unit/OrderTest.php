@@ -1,8 +1,10 @@
 <?php
 
 use App\Order;
+use App\Ticket;
 use App\Concert;
 use Tests\TestCase;
+use App\Reservation;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 class OrderTest extends TestCase
