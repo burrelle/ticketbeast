@@ -17,6 +17,7 @@ class CreateOrdersTable extends Migration
             $table->increments('id');
             $table->string('email');
             $table->integer('amount');
+            $table->string('confirmation_number');
             $table->timestamps();
         });
     }
