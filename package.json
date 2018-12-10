@@ -15,8 +15,14 @@
         "cross-env": "^5.1",
         "jquery": "^3.2",
         "laravel-mix": "^2.0",
+        "less": "^3.9.0",
+        "less-loader": "^4.1.0",
         "lodash": "^4.17.5",
         "popper.js": "^1.12",
         "vue": "^2.5.17"
+    },
+    "dependencies": {
+        "normalize.css": "^8.0.1",
+        "suitcss-base": "^5.0.0"
     }
 }
