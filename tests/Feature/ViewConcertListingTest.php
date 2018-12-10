@@ -37,6 +37,7 @@ class ViewConcertListingTest extends TestCase
         $response->assertSee('The Mosh Pit');
         $response->assertSee('Laraville, ON 17916');
         $response->assertSee('For tickets, call (555) 555-5555');
+        $response->assertStatus(200);
     }
 
     public function testUserCannotViewUnpublishedConcertListing()
