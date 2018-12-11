@@ -9,17 +9,16 @@ class Order extends Model
 {
     protected $guarded = [];
 
-    public static function forTickets($tickets, $email, $amount)
+    public static function forTickets($tickets, $email, $charge)
     {
         $order = self::create([
             'confirmation_number' => OrderConfirmationNumber::generate(),
             'email' => $email,
-            'amount' => $amount
+            'amount' => $charge->amount(),
+            'card_last_four' => $charge->cardLastFour(),
         ]);
 
-        foreach ($tickets as $ticket) {
-            $order->tickets()->save($ticket);
-        }
+        $order->tickets()->saveMany($tickets);
 
         return $order;
     }
@@ -50,7 +49,7 @@ class Order extends Model
             'confirmation_number' => $this->confirmation_number,
             'email' => $this->email,
             'ticket_quantity' => $this->ticketQuantity(),
-            'amount' => $this->amount
+            'amount' => $this->amount,
         ];
     }
 }
