@@ -21,14 +21,14 @@
 
                 @foreach($order->tickets as $ticket)
                 <div class="card m-xs-b-5">
-                    <div class="card-section p-xs-y-3 flex-baseline flex-spaced text-light bg-gray">
+                    <div class="card-section p-xs-y-3 flex-baseline flex-spaced bg-gray">
                         <div>
                             <h1 class="text-xl wt-normal">{{ $ticket->concert->title }}</h1>
-                            <p class="text-light-muted">{{ $ticket->concert->subtitle }}</p>
+                            <p>{{ $ticket->concert->subtitle }}</p>
                         </div>
                         <div class="text-right">
                             <strong>General Admission</strong>
-                            <p class="text-light-soft">Admit one</p>
+                            <p>Admit one</p>
                         </div>
                     </div>
                     <div class="card-section border-b">

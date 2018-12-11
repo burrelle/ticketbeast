@@ -7,6 +7,7 @@ use App\Billing\FakePaymentGateway;
 use App\OrderConfirmationNumberGenerator;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use App\Facades\OrderConfirmationNumber;
+use App\Facades\TicketCode;
 
 class PurchaseTicketsTest extends TestCase
 {
@@ -36,6 +37,7 @@ class PurchaseTicketsTest extends TestCase
     public function testCustomerCanPurchaseConcertTicketsToPublishedConcert()
     {
         OrderConfirmationNumber::shouldReceive('generate')->andReturn('ORDERCONFIRMATION1234');
+        TicketCode::shouldReceive('generateFor')->andReturn('TICKETCODE1', 'TICKETCODE2', 'TICKETCODE3');
         $concert = factory(Concert::class)->states('published')->create(['ticket_price' => '3250'])->addTickets(3);
         $response = $this->orderTickets($concert, [
             'email' => 'john@example.com',

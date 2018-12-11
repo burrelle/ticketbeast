@@ -47668,83 +47668,77 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    props: ['price', 'concertTitle', 'concertId'],
-    data: function data() {
-        return {
-            quantity: 1,
-            stripeHandler: null,
-            processing: false
-        };
+  props: ["price", "concertTitle", "concertId"],
+  data: function data() {
+    return {
+      quantity: 1,
+      stripeHandler: null,
+      processing: false
+    };
+  },
+
+  computed: {
+    description: function description() {
+      if (this.quantity > 1) {
+        return this.quantity + " tickets to " + this.concertTitle;
+      }
+      return "One ticket to " + this.concertTitle;
     },
-
-    computed: {
-        description: function description() {
-            if (this.quantity > 1) {
-                return this.quantity + ' tickets to ' + this.concertTitle;
-            }
-            return 'One ticket to ' + this.concertTitle;
-        },
-        totalPrice: function totalPrice() {
-            return this.quantity * this.price;
-        },
-        priceInDollars: function priceInDollars() {
-            return (this.price / 100).toFixed(2);
-        },
-        totalPriceInDollars: function totalPriceInDollars() {
-            return (this.totalPrice / 100).toFixed(2);
-        }
+    totalPrice: function totalPrice() {
+      return this.quantity * this.price;
     },
-    methods: {
-        initStripe: function initStripe() {
-            var handler = StripeCheckout.configure({
-                key: App.stripePublicKey
-            });
-
-            window.addEventListener('popstate', function () {
-                handler.close();
-            });
-
-            return handler;
-        },
-        openStripe: function openStripe(callback) {
-            this.stripeHandler.open({
-                name: 'TicketBeast',
-                description: this.description,
-                currency: "usd",
-                allowRememberMe: false,
-                panelLabel: 'Pay {{amount}}',
-                amount: this.totalPrice,
-                token: this.purchaseTickets
-            });
-        },
-        purchaseTickets: function purchaseTickets(token) {
-            var _this = this;
-
-            this.processing = true;
-
-            axios.post('/concerts/' + this.concertId + '/orders', {
-                email: token.email,
-                ticket_quantity: this.quantity,
-                payment_token: token.id
-            }).then(function (response) {
-                console.log("Charge succeeded");
-            }).catch(function (response) {
-                _this.processing = false;
-            });
-        }
+    priceInDollars: function priceInDollars() {
+      return (this.price / 100).toFixed(2);
     },
-    created: function created() {
-        this.stripeHandler = this.initStripe();
+    totalPriceInDollars: function totalPriceInDollars() {
+      return (this.totalPrice / 100).toFixed(2);
     }
+  },
+  methods: {
+    initStripe: function initStripe() {
+      var handler = StripeCheckout.configure({
+        key: App.stripePublicKey
+      });
+
+      window.addEventListener("popstate", function () {
+        handler.close();
+      });
+
+      return handler;
+    },
+    openStripe: function openStripe(callback) {
+      this.stripeHandler.open({
+        name: "TicketBeast",
+        description: this.description,
+        currency: "usd",
+        allowRememberMe: false,
+        panelLabel: "Pay {{amount}}",
+        amount: this.totalPrice,
+        image: "/img/checkout-icon.png",
+        token: this.purchaseTickets
+      });
+    },
+    purchaseTickets: function purchaseTickets(token) {
+      var _this = this;
+
+      this.processing = true;
+
+      axios.post("/concerts/" + this.concertId + "/orders", {
+        email: token.email,
+        ticket_quantity: this.quantity,
+        payment_token: token.id
+      }).then(function (response) {
+        window.location = "/orders/" + response.data.confirmation_number;
+      }).catch(function (response) {
+        _this.processing = false;
+      });
+    }
+  },
+  created: function created() {
+    this.stripeHandler = this.initStripe();
+  }
 });
 
 /***/ }),
@@ -47759,25 +47753,17 @@ var render = function() {
     _c("div", { staticClass: "row middle-xs" }, [
       _c("div", { staticClass: "col col-xs-6" }, [
         _c("div", { staticClass: "form-group m-xs-b-4" }, [
-          _c("label", { staticClass: "form-label" }, [
-            _vm._v("\n                    Price\n                ")
-          ]),
+          _c("label", { staticClass: "form-label" }, [_vm._v("Price")]),
           _vm._v(" "),
           _c("span", { staticClass: "form-control-static" }, [
-            _vm._v(
-              "\n                    $" +
-                _vm._s(_vm.priceInDollars) +
-                "\n                "
-            )
+            _vm._v("$" + _vm._s(_vm.priceInDollars))
           ])
         ])
       ]),
       _vm._v(" "),
       _c("div", { staticClass: "col col-xs-6" }, [
         _c("div", { staticClass: "form-group m-xs-b-4" }, [
-          _c("label", { staticClass: "form-label" }, [
-            _vm._v("\n                    Qty\n                ")
-          ]),
+          _c("label", { staticClass: "form-label" }, [_vm._v("Qty")]),
           _vm._v(" "),
           _c("input", {
             directives: [
@@ -47812,7 +47798,7 @@ var render = function() {
           attrs: { disabled: _vm.processing },
           on: { click: _vm.openStripe }
         },
-        [_vm._v("\n            Buy Tickets\n        ")]
+        [_vm._v("Buy Tickets")]
       )
     ])
   ])
