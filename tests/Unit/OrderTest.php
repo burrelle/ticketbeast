@@ -1,5 +1,8 @@
 <?php
 
+namespace Tests\Unit;
+
+use Mockery;
 use App\Order;
 use App\Ticket;
 use App\Concert;

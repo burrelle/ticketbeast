@@ -1,5 +1,7 @@
 <?php
 
+namespace Tests\Mail;
+
 use App\Order;
 use Tests\TestCase;
 use App\Mail\OrderConfirmationEmail;

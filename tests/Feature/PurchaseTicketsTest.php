@@ -1,5 +1,7 @@
 <?php
 
+namespace Tests\Feature;
+
 use App\Concert;
 use Tests\TestCase;
 use App\Facades\TicketCode;
