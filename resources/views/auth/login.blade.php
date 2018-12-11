@@ -12,9 +12,6 @@
                         >Email address</label
                     >
                     <div class="input-group">
-                        <span class="input-group-addon">
-                            @icon('user', 'text-dark-muted text-xs')
-                        </span>
                         <input
                             type="email"
                             name="email"
@@ -27,9 +24,6 @@
                 <div class="form-group">
                     <label class="form-label pseudo-hidden">Password</label>
                     <div class="input-group">
-                        <span class="input-group-addon">
-                            @icon('lock-closed', 'text-dark-muted text-xs')
-                        </span>
                         <input
                             type="password"
                             name="password"
