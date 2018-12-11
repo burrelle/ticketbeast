@@ -2,12 +2,14 @@
 
 use App\Concert;
 use Tests\TestCase;
+use App\Facades\TicketCode;
 use App\Billing\PaymentGateway;
 use App\Billing\FakePaymentGateway;
+use App\Mail\OrderConfirmationEmail;
+use Illuminate\Support\Facades\Mail;
+use App\Facades\OrderConfirmationNumber;
 use App\OrderConfirmationNumberGenerator;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use App\Facades\OrderConfirmationNumber;
-use App\Facades\TicketCode;
 
 class PurchaseTicketsTest extends TestCase
 {
@@ -18,6 +20,7 @@ class PurchaseTicketsTest extends TestCase
         parent::setUp();
         $this->paymentGateway = new FakePaymentGateway;
         $this->app->instance(PaymentGateway::class, $this->paymentGateway);
+        Mail::fake();
     }
 
     public function orderTickets($concert, $params)
@@ -58,7 +61,11 @@ class PurchaseTicketsTest extends TestCase
 
         $this->assertEquals(9750, $this->paymentGateway->totalCharges());
         $this->assertTrue($concert->hasOrderFor('john@example.com'));
-        $this->assertEquals(3, $concert->ordersFor('john@example.com')->first()->ticketQuantity());
+        $order = $concert->ordersFor('john@example.com')->first();
+        $this->assertEquals(3, $order->ticketQuantity());
+        Mail::assertSent(OrderConfirmationEmail::class, function ($mail) use ($order) {
+            return $mail->hasTo('john@example.com') && $mail->order->id == $order->id;
+        });
     }
 
     public function testCannontPurchaseTicketsToUnpublishedConcert()
@@ -165,17 +172,13 @@ class PurchaseTicketsTest extends TestCase
         $concert = factory(Concert::class)->states('published')->create([
             'ticket_price' => 1200
         ])->addTickets(3);
+
         $this->paymentGateway->beforeFirstCharge(function ($paymentGateway) use ($concert) {
-
-
-
             $response = $this->orderTickets($concert, [
                 'email' => 'personB@example.com',
                 'ticket_quantity' => 1,
                 'payment_token' => $this->paymentGateway->getValidTestToken(),
             ]);
-
-
 
             $response->assertStatus(422);
             $this->assertFalse($concert->hasOrderFor('personB@example.com'));

@@ -7,7 +7,7 @@
             <div class="m-xs-b-6">
                 <div class="flex-baseline flex-spaced p-xs-y-4 border-b">
                     <h1 class="text-xl">Order Summary</h1>
-                    <a href="{{ url("/orders/{$order->confirmation_number}") }}" class="link-brand-soft">{{ $order->confirmation_number }}</a>
+                    <a href="{{ url("/orders/{$order->confirmation_number}") }}  class="link-brand-soft">{{ $order->confirmation_number }}</a>
                 </div>
                 <div class="p-xs-y-4 border-b">
                     <p>
