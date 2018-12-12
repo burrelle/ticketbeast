@@ -17,7 +17,8 @@ $factory->define(App\Concert::class, function (Faker $faker) {
         'city' => 'Fakeville',
         'state' => 'ON',
         'zip' => '90210',
-        'additional_information' => 'Some sample additional information'
+        'additional_information' => 'Some sample additional information',
+        'ticket_quantity' => 5
     ];
 });
 

@@ -50,9 +50,7 @@ class AddConcertTest extends TestCase
     public function testAddingValidConcert()
     {
         $this->disableExceptionHandling();
-
         $user = factory(User::class)->create();
-
         $response = $this->actingAs($user)->post('/backstage/concerts', [
             'title' => 'No Warning',
             'subtitle' => 'with Cruel Hand and Backtrack',
@@ -67,7 +65,6 @@ class AddConcertTest extends TestCase
             'ticket_price' => '32.50',
             'ticket_quantity' => '75',
         ]);
-
         tap(Concert::first(), function ($concert) use ($response, $user) {
             $response->assertStatus(302);
             $response->assertRedirect("/concerts/{$concert->id}");
@@ -83,6 +80,7 @@ class AddConcertTest extends TestCase
             $this->assertEquals('ON', $concert->state);
             $this->assertEquals('12345', $concert->zip);
             $this->assertEquals(3250, $concert->ticket_price);
+            $this->assertEquals(75, $concert->ticket_quantity);
             $this->assertEquals(75, $concert->ticketsRemaining());
         });
     }

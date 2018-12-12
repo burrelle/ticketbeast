@@ -29,7 +29,7 @@ class ConcertTest extends TestCase
             'date' => Carbon::parse('2016-12-01 17:00:00')
         ]);
 
-        $this->assertEquals('5:00 pm', $concert->formatted_start_time);
+        $this->assertEquals('5:00pm', $concert->formatted_start_time);
     }
 
     public function testCanGetTicketPriceInDollars()
@@ -119,9 +119,14 @@ class ConcertTest extends TestCase
 
     public function testConcertsCanBePublished()
     {
-        $concert = factory(Concert::class)->create(['published_at' => null]);
+        $concert = factory(Concert::class)->create([
+            'published_at' => null,
+            'ticket_quantity' => 5,
+        ]);
         $this->assertFalse($concert->isPublished());
+        $this->assertEquals(0, $concert->ticketsRemaining());
         $concert->publish();
         $this->assertTrue($concert->isPublished());
+        $this->assertEquals(5, $concert->ticketsRemaining());
     }
 }
