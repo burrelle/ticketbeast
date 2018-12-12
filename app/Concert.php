@@ -84,4 +84,19 @@ class Concert extends Model
     {
         return $this->orders()->where('email', $email)->get();
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function isPublished()
+    {
+        return $this->published_at !== null;
+    }
+
+    public function publish()
+    {
+        return $this->update(['published_at' => $this->freshTimestamp()]);
+    }
 }

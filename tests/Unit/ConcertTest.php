@@ -116,4 +116,12 @@ class ConcertTest extends TestCase
         }
         $this->fail('Reserved purchased tickets');
     }
+
+    public function testConcertsCanBePublished()
+    {
+        $concert = factory(Concert::class)->create(['published_at' => null]);
+        $this->assertFalse($concert->isPublished());
+        $concert->publish();
+        $this->assertTrue($concert->isPublished());
+    }
 }
