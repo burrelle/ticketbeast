@@ -17,7 +17,7 @@ class Ticket extends Model
 
     public function reserve()
     {
-        $this->update(['reserved_at' => Carbon::now() ]);
+        $this->update(['reserved_at' => Carbon::now()]);
     }
 
     public function release()
@@ -39,5 +39,10 @@ class Ticket extends Model
     public function getPriceAttribute()
     {
         return $this->concert->ticket_price;
+    }
+
+    public function scopeSold($query)
+    {
+        return $query->whereNotNull('order_id');
     }
 }

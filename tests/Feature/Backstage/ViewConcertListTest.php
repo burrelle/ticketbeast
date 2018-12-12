@@ -41,7 +41,7 @@ class ViewConcertListTest extends TestCase
         $response->assertRedirect('/login');
     }
 
-    public function testPromotersCanOnlyViewListOfTheirOkwnConcerts()
+    public function testPromotersCanOnlyViewListOfTheirOwnConcerts()
     {
         $this->disableExceptionHandling();
         $user = factory(User::class)->create();
