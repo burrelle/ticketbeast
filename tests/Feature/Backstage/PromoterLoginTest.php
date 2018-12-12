@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\Backstage;
 
 use App\User;
 use Tests\TestCase;
@@ -21,7 +21,7 @@ class PromoterLoginTest extends TestCase
             'email' => 'jane@example.com',
             'password' => 'super-secret-password'
         ]);
-        $response->assertRedirect('/backstage/concerts');
+        $response->assertRedirect('/backstage/concerts/new');
         $this->assertTrue(Auth::check());
         $this->assertTrue(Auth::user()->is($user));
     }
@@ -38,6 +38,8 @@ class PromoterLoginTest extends TestCase
         ]);
         $response->assertRedirect('/login');
         $response->assertSessionHasErrors('email');
+        $this->assertTrue(session()->hasOldInput('email'));
+        $this->assertFalse(session()->hasOldInput('password'));
         $this->assertFalse(Auth::check());
     }
 
@@ -49,6 +51,14 @@ class PromoterLoginTest extends TestCase
         ]);
         $response->assertRedirect('/login');
         $response->assertSessionHasErrors('email');
+        $this->assertFalse(Auth::check());
+    }
+
+    public function testLoggingOutTheCurrentUser()
+    {
+        Auth::login(factory(User::class)->create());
+        $response = $this->post('/logout');
+        $response->assertRedirect('/login');
         $this->assertFalse(Auth::check());
     }
 }
