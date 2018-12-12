@@ -1,6 +1,4 @@
-@extends('layouts.backstage')
-
-@section('backstageContent')
+@extends('layouts.backstage') @section('backstageContent')
 <div class="bg-light p-xs-y-4 border-b">
     <div class="container">
         <div class="flex-spaced flex-y-center">
@@ -28,9 +26,14 @@
             <h2 class="m-xs-b-2 text-lg">Overview</h2>
             <div class="card">
                 <div class="card-section border-b">
-                    <p class="m-xs-b-4">This show is 60% sold out.</p>
-                    <progress class="progress" value="357" max="600"
-                        >60%</progress
+                    <p class="m-xs-b-4">
+                        This show is {{ $concert->percentSoldOut() }}% sold out.
+                    </p>
+                    <progress
+                        class="progress"
+                        value="{{ $concert->ticketsSold() }}"
+                        max="{{ $concert->totalTickets() }}"
+                        >{{ $concert->percentSoldOut() }}%</progress
                     >
                 </div>
                 <div class="row">
@@ -65,7 +68,7 @@
                             <h3 class="text-base wt-normal m-xs-b-1">
                                 Total Revenue
                             </h3>
-                            <div class="text-jumbo wt-bold">$10,353</div>
+                            <div class="text-jumbo wt-bold"> ${{ $concert->revenueInDollars() }}</div>
                         </div>
                     </div>
                 </div>
