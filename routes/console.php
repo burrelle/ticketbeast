@@ -20,8 +20,8 @@ Artisan::command('inspire', function () {
 })->describe('Display an inspiring quote');
 
 Artisan::command('invite-promoter {email}', function ($email) {
-    $invitation = Invitation::create([
+    Invitation::create([
         'email' => $email,
         'code' => InvitationCode::generate(),
-    ]);
+    ])->send();
 })->describe('Invite a new promoter to create an account.');
