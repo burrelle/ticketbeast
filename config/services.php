@@ -38,6 +38,7 @@ return [
             'secret' => env('STRIPE_WEBHOOK_SECRET'),
             'tolerance' => env('STRIPE_WEBHOOK_TOLERANCE', 300),
         ],
+        'client_id' => env('STRIPE_CLIENT_ID')
     ],
 
 ];
