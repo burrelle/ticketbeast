@@ -13,6 +13,10 @@ class RegisterController extends Controller
     {
         $invitation = Invitation::findByCode(request('invitation_code'));
         abort_if($invitation->hasBeenUsed(), 404);
+        request()->validate([
+            'email' => ['required', 'email', 'unique:users'],
+            'password' => ['required'],
+        ]);
         $user = User::create([
             'email' => request('email'),
             'password' => bcrypt(request('password')),
