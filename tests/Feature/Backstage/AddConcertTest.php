@@ -343,7 +343,7 @@ class AddConcertTest extends TestCase
 
     public function testPosterImageIsUploadedIfIncluded()
     {
-        Storage::fake('s3');
+        Storage::fake('public');
         $user = factory(User::class)->create();
         $file = File::image('concert-poster.png', 850, 1100);
         $response = $this->actingAs($user)->post('/backstage/concerts', $this->validParams([
@@ -351,17 +351,17 @@ class AddConcertTest extends TestCase
         ]));
         tap(Concert::first(), function ($concert) use ($file) {
             $this->assertNotNull($concert->poster_image_path);
-            Storage::disk('s3')->assertExists($concert->poster_image_path);
+            Storage::disk('public')->assertExists($concert->poster_image_path);
             $this->assertFileEquals(
                 $file->getPathname(),
-                Storage::disk('s3')->path($concert->poster_image_path)
+                Storage::disk('public')->path($concert->poster_image_path)
             );
         });
     }
 
     public function testPosterImageMustBeAnImage()
     {
-        Storage::fake('s3');
+        Storage::fake('public');
         $user = factory(User::class)->create();
         $file = File::create('not-a-poster.pdf');
         $response = $this->actingAs($user)->from('/backstage/concerts/new')->post('/backstage/concerts', $this->validParams([
@@ -375,9 +375,9 @@ class AddConcertTest extends TestCase
 
     public function testPosterImageMustBeAtLeast400pxWide()
     {
-        Storage::fake('s3');
+        Storage::fake('public');
         $user = factory(User::class)->create();
-        $file = File::image('poster.png', 399, 516);
+        $file = File::image('poster.png', 599, 775);
         $response = $this->actingAs($user)->from('/backstage/concerts/new')->post('/backstage/concerts', $this->validParams([
             'poster_image' => $file,
         ]));
@@ -388,7 +388,7 @@ class AddConcertTest extends TestCase
 
     public function testPosterImageMustHaveLetterAspectRatio()
     {
-        Storage::fake('s3');
+        Storage::fake('public');
         $user = factory(User::class)->create();
         $file = File::image('poster.png', 851, 1100);
         $response = $this->actingAs($user)->from('/backstage/concerts/new')->post('/backstage/concerts', $this->validParams([
