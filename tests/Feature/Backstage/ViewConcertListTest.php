@@ -14,26 +14,6 @@ class ViewConcertListTest extends TestCase
 {
     use DatabaseMigrations;
 
-    protected function setUp()
-    {
-        parent::setUp();
-
-        Collection::macro('assertContains', function ($value) {
-            Assert::assertTrue($this->contains($value), "Failed asserting that the collection contains the specified value.");
-        });
-        Collection::macro('assertNotContains', function ($value) {
-            Assert::assertFalse($this->contains($value), "Failed asserting that the collection does not contain the specified value.");
-        });
-
-        Collection::macro('assertEquals', function ($items) {
-            Assert::assertEquals(count($this), count($items));
-            $this->zip($items)->each(function ($pair) {
-                list($a, $b) = $pair;
-                Assert::assertTrue($a->is($b));
-            });
-        });
-    }
-
     public function testGuestsCannotViewPromotersConcertList()
     {
         $response = $this->get('/backstage/concerts');
