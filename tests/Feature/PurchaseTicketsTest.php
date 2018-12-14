@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\User;
 use App\Concert;
 use Tests\TestCase;
 use App\Facades\TicketCode;
@@ -44,7 +45,12 @@ class PurchaseTicketsTest extends TestCase
     {
         OrderConfirmationNumber::shouldReceive('generate')->andReturn('ORDERCONFIRMATION1234');
         TicketCode::shouldReceive('generateFor')->andReturn('TICKETCODE1', 'TICKETCODE2', 'TICKETCODE3');
-        $concert = CustomConcertFactory::createPublished(['ticket_price' => '3250', 'ticket_quantity' => 3]);
+        $user = factory(User::class)->create(['stripe_account_id' => 'test_acct_1234']);
+        $concert = CustomConcertFactory::createPublished([
+            'ticket_price' => 3250,
+            'ticket_quantity' => 3,
+            'user_id' => $user,
+        ]);
         $response = $this->orderTickets($concert, [
             'email' => 'john@example.com',
             'ticket_quantity' => 3,
@@ -62,12 +68,13 @@ class PurchaseTicketsTest extends TestCase
             ]
         ]);
 
-        $this->assertEquals(9750, $this->paymentGateway->totalCharges());
+        $this->assertEquals(9750, $this->paymentGateway->totalChargesFor('test_acct_1234'));
         $this->assertTrue($concert->hasOrderFor('john@example.com'));
         $order = $concert->ordersFor('john@example.com')->first();
         $this->assertEquals(3, $order->ticketQuantity());
         Mail::assertSent(OrderConfirmationEmail::class, function ($mail) use ($order) {
-            return $mail->hasTo('john@example.com') && $mail->order->id == $order->id;
+            return $mail->hasTo('john@example.com')
+                && $mail->order->id == $order->id;
         });
     }
 

@@ -3,7 +3,6 @@
 use App\Concert;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
-use App\CustomConcertFactory;
 
 class DatabaseSeeder extends Seeder
 {
@@ -14,11 +13,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+        $faker = \Faker\Factory::create();
+        $gateway = new \App\Billing\FakePaymentGateway;
+
         $user = factory(App\User::class)->create([
             'email' => "adam@example.com",
             'password' => bcrypt('secret'),
         ]);
-        CustomConcertFactory::createPublished([
+
+        $concert = \ConcertFactory::createPublished([
             'user_id' => $user->id,
             'title' => "The Red Chord",
             'subtitle' => "with Animosity and Lethargy",
@@ -28,10 +31,20 @@ class DatabaseSeeder extends Seeder
             'city' => "Laraville",
             'state' => "ON",
             'zip' => "17916",
-            'date' => Carbon::parse('2017-09-13 8:00pm'),
+            'date' => Carbon::today()->addMonths(3)->hour(20),
             'ticket_price' => 3250,
-            'ticket_quantity' => 10,
+            'ticket_quantity' => 250,
         ]);
+
+        foreach (range(1, 50) as $i) {
+            Carbon::setTestNow(Carbon::instance($faker->dateTimeBetween('-2 months')));
+
+            $concert->reserveTickets(rand(1, 4), $faker->safeEmail)
+                ->complete($gateway, $gateway->getValidTestToken($faker->creditCardNumber), 'test_acct_1234');
+        }
+
+        Carbon::setTestNow();
+
         factory(App\Concert::class)->create([
             'user_id' => $user->id,
             'title' => "Slayer",
@@ -42,7 +55,7 @@ class DatabaseSeeder extends Seeder
             'city' => "Laraville",
             'state' => "ON",
             'zip' => "19276",
-            'date' => Carbon::parse('2017-10-05 7:00pm'),
+            'date' => Carbon::today()->addMonths(6)->hour(19),
             'ticket_price' => 5500,
             'ticket_quantity' => 10,
         ]);
