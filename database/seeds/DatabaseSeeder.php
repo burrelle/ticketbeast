@@ -2,6 +2,7 @@
 
 use App\Concert;
 use Carbon\Carbon;
+use App\CustomConcertFactory;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -21,7 +22,7 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('secret'),
         ]);
 
-        $concert = \ConcertFactory::createPublished([
+        $concert = CustomConcertFactory::createPublished([
             'user_id' => $user->id,
             'title' => "The Red Chord",
             'subtitle' => "with Animosity and Lethargy",
